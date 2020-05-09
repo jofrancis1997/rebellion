@@ -1,0 +1,13 @@
+@startuml agent-states
+
+[*] --> Quiet
+
+Quiet --> Active : [grievance > net-risk]
+
+Active --> Quiet : [grievance < net-risk]
+
+Active --> Jail : sent to jail by Cop
+
+Jail --> Quiet : [jail-term == 0]
+
+@enduml

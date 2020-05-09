@@ -1,0 +1,42 @@
+@startuml Rebellion
+
+abstract class Person {
+    + void takeTurn(Person[] visible)
+    + void move(int xPos, int yPos)
+    + Location getLocation()
+}
+
+class Agent {
+    - double PERCEIVED_HARDSHIP {readOnly}
+    - double RISK_AVERSION {readOnly}
+    - boolean active
+    - int jailTerm
+    + Agent()
+    + boolean getActive()
+}
+
+class Cop {
+    + Cop()
+}
+
+class Location {
+    + int xPos
+    + int yPos
+    + Location(int xPos, int yPos)
+}
+
+class Main {
+    - double GOVERNMENT_LEGITIMACY {readOnly}
+    - double VISION {readOnly}
+    - int MAX_JAIL_TERM {readOnly}
+    + Main(double governmentLegimacy, double vision, int maxJailTerm)
+    + void start()
+    + void main(String[] args) {static}
+}
+
+Main --* "*" Person : - people
+Agent --|> Person
+Cop --|> Person
+Person --* "1" Location : - location
+
+@enduml
