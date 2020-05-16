@@ -13,6 +13,16 @@ public class Tile {
         return people;
     }
 
+    public boolean empty() {
+        for (Person person : people) {
+            if (person instanceof Cop || person instanceof Agent &&
+                ((Agent) person).getJailTerm() == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Location getLocation() {
         return location;
     }

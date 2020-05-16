@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 public class Main {
     private final double governmentLegitimacy;
+    private final double k;
     private final int maxJailTerm;
-    private final HashSet<Tile> tiles = new HashSet<>();
+    private final Set<Tile> tiles = new HashSet<>();
     private final int vision;
 
     public Main(
@@ -16,10 +17,12 @@ public class Main {
             int vision,
             double copDensity,
             double agentDensity,
-            int worldSize) throws Exception {
+            int worldSize,
+            double k) throws Exception {
         this.governmentLegitimacy = governmentLegitimacy;
-        this.vision = vision;
+        this.k = k;
         this.maxJailTerm = maxJailTerm;
+        this.vision = vision;
 
         // Initialise tiles
         for (int x = 0; x < worldSize; x++) {
@@ -46,7 +49,7 @@ public class Main {
 
         // Initialise agents
         for (int i = 0; i < agentDensity * 0.1 * Math.pow(worldSize, 2); i++) {
-            Agent agent = new Agent(governmentLegitimacy);
+            Agent agent = new Agent(governmentLegitimacy, k);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
                     .collect(Collectors.toList());
@@ -75,16 +78,17 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 6) {
+        if (args.length < 7) {
             throw new Exception("Arguments must be provided");
         }
 
         double governmentLegitimacy = Double.parseDouble(args[0]);
-        int vision = Integer.parseInt(args[1]);
-        int maxJailTerm = Integer.parseInt(args[2]);
-        double copDensity = Double.parseDouble(args[3]);
-        double agentDensity = Double.parseDouble(args[4]);
+        int maxJailTerm = Integer.parseInt(args[1]);
+        double copDensity = Double.parseDouble(args[2]);
+        double agentDensity = Double.parseDouble(args[3]);
+        int vision = Integer.parseInt(args[4]);
         int worldSize = Integer.parseInt(args[5]);
+        double k = Double.parseDouble(args[6]);
 
         new Main(
             governmentLegitimacy,
@@ -92,6 +96,7 @@ public class Main {
             vision,
             copDensity,
             agentDensity,
-            worldSize).start();
+            worldSize,
+            k).start();
     }
 }

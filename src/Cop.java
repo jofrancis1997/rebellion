@@ -9,5 +9,6 @@ public class Cop extends Person {
 
     @Override
     public void takeTurn(Tile currentTile, Set<Tile> visibleTiles) {
+        super.takeTurn(currentTile, visibleTiles);
     }
 }
