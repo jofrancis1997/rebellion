@@ -59,9 +59,11 @@ public class Main {
     }
 
     public void start() {
-        for (Tile tile : tiles) {
-            for (Person person : tile.getPeople()) {
-                person.takeTurn(tile, visibleTiles(tile.getLocation()));
+        while (true) {
+            for (Tile tile : tiles) {
+                for (Person person : tile.getPeople()) {
+                    person.takeTurn(tile, visibleTiles(tile.getLocation()));
+                }
             }
         }
     }
