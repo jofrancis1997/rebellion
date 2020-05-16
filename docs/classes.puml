@@ -1,22 +1,22 @@
 @startuml Rebellion
 
-abstract class Person {
-    + void takeTurn(Person[] visible)
-    + void move(int xPos, int yPos)
-    + Location getLocation()
-}
-
 class Agent {
-    - double PERCEIVED_HARDSHIP {readOnly}
-    - double RISK_AVERSION {readOnly}
+    - double grievance {readOnly}
+    - double k {readOnly}
+    - double perceivedHardship {readOnly}
+    - double riskAversion {readOnly}
+    - double threshold {readOnly}
     - boolean active
     - int jailTerm
-    + Agent()
+    + Agent(double governmentLegitimacy, double k, double threshold)
     + boolean getActive()
+    + int getJailTerm()
+    + void setJailTerm()
 }
 
 class Cop {
-    + Cop()
+    - int maxJailTerm {readOnly}
+    + Cop(int maxJailTerm)
 }
 
 class Location {
@@ -26,17 +26,29 @@ class Location {
 }
 
 class Main {
-    - double GOVERNMENT_LEGITIMACY {readOnly}
-    - double VISION {readOnly}
-    - int MAX_JAIL_TERM {readOnly}
-    + Main(double governmentLegimacy, double vision, int maxJailTerm)
+    - double vision {readOnly}
+    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold)
     + void start()
+    - Set<Tile> visibleTiles(Location location)
     + void main(String[] args) {static}
 }
 
-Main --* "*" Person : - people
+abstract class Person {
+    + void takeTurn(Person[] visible)
+}
+
+class Tile {
+    + Tile(Location location)
+    + Set<Person> getPeople()
+    + boolean empty()
+    + Location getLocation()
+}
+
+
+Main --* "*" Tile : - tiles
 Agent --|> Person
 Cop --|> Person
-Person --* "1" Location : - location
+Tile --* "*" Person : - people
+Tile --* "1" Location : - location
 
 @enduml

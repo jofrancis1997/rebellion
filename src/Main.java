@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Main {
-    private final double threshold = 0.1;
     private final Set<Tile> tiles = new HashSet<>();
     private final int vision;
 
@@ -16,7 +15,8 @@ public class Main {
             double copDensity,
             double agentDensity,
             int worldSize,
-            double k) throws Exception {
+            double k,
+            double threshold) throws Exception {
         this.vision = vision;
 
         // Initialise tiles
@@ -77,7 +77,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 7) {
+        if (args.length < 8) {
             throw new Exception("Arguments must be provided");
         }
 
@@ -88,6 +88,7 @@ public class Main {
         int vision = Integer.parseInt(args[4]);
         int worldSize = Integer.parseInt(args[5]);
         double k = Double.parseDouble(args[6]);
+        double threshold = Double.parseDouble(args[7]);
 
         new Main(
             governmentLegitimacy,
@@ -96,6 +97,7 @@ public class Main {
             copDensity,
             agentDensity,
             worldSize,
-            k).start();
+            k,
+            threshold).start();
     }
 }
