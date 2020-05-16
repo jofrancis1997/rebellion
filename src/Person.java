@@ -13,5 +13,5 @@ public abstract class Person {
             emptyTiles.get(rand.nextInt(emptyTiles.size())).getPeople()
                     .add(this);
         }
-    };
+    }
 }

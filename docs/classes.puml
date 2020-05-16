@@ -20,9 +20,11 @@ class Cop {
 }
 
 class Location {
-    + int xPos
-    + int yPos
+    - int xPos
+    - int yPos
     + Location(int xPos, int yPos)
+    + int getXPos()
+    + int getYPos()
 }
 
 class Main {
