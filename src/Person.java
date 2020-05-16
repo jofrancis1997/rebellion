@@ -8,7 +8,10 @@ public abstract class Person {
         currentTile.getPeople().remove(this);
         List<Tile> emptyTiles = visibleTiles.stream()
                 .filter(tile -> tile.empty()).collect(Collectors.toList());
-        Random rand = new Random();
-        emptyTiles.get(rand.nextInt(emptyTiles.size())).getPeople().add(this);
+        if (emptyTiles.size() > 0) {
+            Random rand = new Random();
+            emptyTiles.get(rand.nextInt(emptyTiles.size())).getPeople()
+                    .add(this);
+        }
     };
 }

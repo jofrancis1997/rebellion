@@ -5,9 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Main {
-    private final double governmentLegitimacy;
-    private final double k;
-    private final int maxJailTerm;
+    private final double threshold = 0.1;
     private final Set<Tile> tiles = new HashSet<>();
     private final int vision;
 
@@ -19,9 +17,6 @@ public class Main {
             double agentDensity,
             int worldSize,
             double k) throws Exception {
-        this.governmentLegitimacy = governmentLegitimacy;
-        this.k = k;
-        this.maxJailTerm = maxJailTerm;
         this.vision = vision;
 
         // Initialise tiles
@@ -42,20 +37,24 @@ public class Main {
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
                     .collect(Collectors.toList());
-            Random rand = new Random();
-            Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
-            tile.getPeople().add(cop);
+            if (emptyTiles.size() > 0) {
+                Random rand = new Random();
+                Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
+                tile.getPeople().add(cop);
+            }
         }
 
         // Initialise agents
         for (int i = 0; i < agentDensity * 0.1 * Math.pow(worldSize, 2); i++) {
-            Agent agent = new Agent(governmentLegitimacy, k);
+            Agent agent = new Agent(governmentLegitimacy, k, threshold);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
                     .collect(Collectors.toList());
-            Random rand = new Random();
-            Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
-            tile.getPeople().add(agent);
+            if (emptyTiles.size() > 0) {
+                Random rand = new Random();
+                Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
+                tile.getPeople().add(agent);
+            }
         }
     }
 
