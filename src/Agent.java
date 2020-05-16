@@ -1,8 +1,23 @@
+import java.util.Random;
 import java.util.Set;
 
 public class Agent extends Person {
+    private final double governmentLegitimacy;
+    private final double perceivedHardship;
+    private final double riskAversion;
+
     private boolean active;
-    private int jailTerm = 0;
+    private int jailTerm;
+
+    public Agent(double governmentLegitimacy) {
+        Random rand = new Random();
+
+        this.active = false;
+        this.governmentLegitimacy = governmentLegitimacy;
+        this.jailTerm = 0;
+        this.perceivedHardship = rand.nextDouble();
+        this.riskAversion = rand.nextDouble();
+    }
 
     public boolean getActive() {
         return active;
