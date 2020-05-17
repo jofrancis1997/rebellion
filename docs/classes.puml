@@ -32,6 +32,7 @@ class Main {
     + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold)
     + void start()
     - Set<Tile> visibleTiles(Location location)
+    - void recordSnapshot()
     + void main(String[] args) {static}
 }
 
@@ -39,6 +40,12 @@ abstract class Person {
     + void takeTurn(Person[] visible)
     + Tile getTile()
     + void setTile(Tile tile)
+}
+
+class Snapshot {
+    + int active
+    + int jailed
+    + int quiet
 }
 
 class Tile {
@@ -52,6 +59,7 @@ class Tile {
 
 
 Main --* "*" Tile : - tiles
+Main --* "*" Snapshot : - snapshots
 Agent --|> Person
 Cop --|> Person
 Tile --* "*" Person : - people

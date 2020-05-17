@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class Main {
     private final Set<Tile> tiles = new HashSet<>();
+    private final Set<Person> people = new HashSet<>();
+    private final List<Snapshot> snapshots = new ArrayList<>();
     private final int vision;
 
     public Main(
@@ -42,6 +44,7 @@ public class Main {
                 Random rand = new Random();
                 Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
                 tile.addPerson(cop);
+                people.add(cop);
             }
         }
 
@@ -55,21 +58,34 @@ public class Main {
                 Random rand = new Random();
                 Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
                 tile.addPerson(agent);
+                people.add(agent);
             }
         }
+        recordSnapshot();
+    }
+
+    private void recordSnapshot() {
+        Snapshot snapshot = new Snapshot();
+        for (Person person : people) {
+            if (person instanceof Agent) {
+                if (((Agent) person).getJailTerm() > 0) {
+                    snapshot.jailed++;
+                } else if (((Agent) person).getActive()) {
+                    snapshot.active++;
+                } else {
+                    snapshot.quiet++;
+                }
+            }
+        }
+        snapshots.add(snapshot);
     }
 
     public void start() {
         while (true) {
-            List<Person> allPeople = new ArrayList<>();
-            for (Tile tile : tiles) {
-                for (Person person : tile.getPeople()) {
-                    allPeople.add(person);
-                }
-            }
-            for (Person person : allPeople) {
+            for (Person person : people) {
                 person.takeTurn(visibleTiles(person.getTile().getLocation()));
             }
+            recordSnapshot();
         }
     }
 
