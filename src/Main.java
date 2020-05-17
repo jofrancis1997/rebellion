@@ -170,6 +170,8 @@ public class Main {
         System.out.print("Output file: ");
         String output = scan.next();
 
+        scan.close();
+
         new Main(
             governmentLegitimacy,
             maxJailTerm,
