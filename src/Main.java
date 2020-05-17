@@ -113,7 +113,16 @@ public class Main {
             }
         });
 
+        System.out.println("\nActive | Jailed | Quiet");
+
         while (true) {
+            Snapshot snapshot = snapshots.get(snapshots.size() - 1);
+            System.out.print(
+                String.format(
+                    "\r%6d | %6d | %5d",
+                    snapshot.active,
+                    snapshot.jailed,
+                    snapshot.quiet));
             for (Person person : people) {
                 person.takeTurn(visibleTiles(person.getTile().getLocation()));
             }
