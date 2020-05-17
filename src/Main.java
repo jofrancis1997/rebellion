@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -131,18 +132,34 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 8) {
-            throw new Exception("Arguments must be provided");
-        }
+        Scanner scan = new Scanner(System.in);
 
-        double governmentLegitimacy = Double.parseDouble(args[0]);
-        int maxJailTerm = Integer.parseInt(args[1]);
-        double copDensity = Double.parseDouble(args[2]);
-        double agentDensity = Double.parseDouble(args[3]);
-        int vision = Integer.parseInt(args[4]);
-        int worldSize = Integer.parseInt(args[5]);
-        double k = Double.parseDouble(args[6]);
-        double threshold = Double.parseDouble(args[7]);
+        System.out.print("Government Legitimacy: ");
+        double governmentLegitimacy = scan.nextDouble();
+
+        System.out.print("Max Jail Term: ");
+        int maxJailTerm = scan.nextInt();
+
+        System.out.print("Cop Density: ");
+        double copDensity = scan.nextDouble();
+
+        System.out.print("Agent Density: ");
+        double agentDensity = scan.nextDouble();
+
+        System.out.print("Vision: ");
+        int vision = scan.nextInt();
+
+        System.out.print("World Size: ");
+        int worldSize = scan.nextInt();
+
+        System.out.print("k: ");
+        double k = scan.nextDouble();
+
+        System.out.print("Threshold: ");
+        double threshold = scan.nextDouble();
+
+        System.out.print("Output file: ");
+        String output = scan.next();
 
         new Main(
             governmentLegitimacy,
@@ -153,6 +170,6 @@ public class Main {
             worldSize,
             k,
             threshold,
-            "out.csv").start();
+            output).start();
     }
 }
