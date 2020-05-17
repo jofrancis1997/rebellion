@@ -41,7 +41,7 @@ public class Main {
         }
 
         // Initialise cops
-        for (int i = 0; i < copDensity * 0.1 * Math.pow(worldSize, 2); i++) {
+        for (int i = 0; i < copDensity * 0.01 * Math.pow(worldSize, 2); i++) {
             Cop cop = new Cop(maxJailTerm);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
@@ -55,7 +55,7 @@ public class Main {
         }
 
         // Initialise agents
-        for (int i = 0; i < agentDensity * 0.1 * Math.pow(worldSize, 2); i++) {
+        for (int i = 0; i < agentDensity * 0.01 * Math.pow(worldSize, 2); i++) {
             Agent agent = new Agent(governmentLegitimacy, k, threshold);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
