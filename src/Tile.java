@@ -10,7 +10,7 @@ public class Tile {
     }
 
     public Set<Person> getPeople() {
-        return people;
+        return new HashSet<>(people);
     }
 
     public boolean empty() {
@@ -25,6 +25,16 @@ public class Tile {
 
     public Location getLocation() {
         return location;
+    }
+
+    public void addPerson(Person person) {
+        this.people.add(person);
+        person.setTile(this);
+    }
+
+    public void removePerson(Person person) {
+        this.people.remove(person);
+        person.setTile(null);
     }
 
     @Override

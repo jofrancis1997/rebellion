@@ -37,6 +37,8 @@ class Main {
 
 abstract class Person {
     + void takeTurn(Person[] visible)
+    + Tile getTile()
+    + void setTile(Tile tile)
 }
 
 class Tile {
@@ -44,6 +46,8 @@ class Tile {
     + Set<Person> getPeople()
     + boolean empty()
     + Location getLocation()
+    + void addPerson(Person person)
+    + void removePerson(Person person)
 }
 
 
@@ -51,6 +55,7 @@ Main --* "*" Tile : - tiles
 Agent --|> Person
 Cop --|> Person
 Tile --* "*" Person : - people
+Person --* "1" Tile : # tile
 Tile --* "1" Location : - location
 
 @enduml

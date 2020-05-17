@@ -36,12 +36,12 @@ public class Agent extends Person {
     }
 
     @Override
-    public void takeTurn(Tile currentTile, Set<Tile> visibleTiles) {
+    public void takeTurn(Set<Tile> visibleTiles) {
         if (jailTerm == 0) {
-            super.takeTurn(currentTile, visibleTiles);
+            super.takeTurn(visibleTiles);
 
             int cops = 0;
-            int activeAgents = 0;
+            int activeAgents = 1;
 
             for (Tile tile : visibleTiles) {
                 for (Person person : tile.getPeople()) {

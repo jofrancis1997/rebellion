@@ -11,8 +11,8 @@ public class Cop extends Person {
     }
 
     @Override
-    public void takeTurn(Tile currentTile, Set<Tile> visibleTiles) {
-        super.takeTurn(currentTile, visibleTiles);
+    public void takeTurn(Set<Tile> visibleTiles) {
+        super.takeTurn(visibleTiles);
         List<Agent> activeAgents = new ArrayList<>();
 
         for (Tile tile : visibleTiles) {
@@ -27,10 +27,8 @@ public class Cop extends Person {
             Random rand = new Random();
             Agent agent = activeAgents.get(rand.nextInt(activeAgents.size()));
             agent.setJailTerm(rand.nextInt(maxJailTerm));
-            currentTile.getPeople().remove(this);
-            visibleTiles.stream()
-                    .filter(tile -> tile.getPeople().contains(agent))
-                    .findFirst().get().getPeople().add(this);
+            tile.removePerson(this);
+            agent.getTile().addPerson(this);
         }
     }
 }

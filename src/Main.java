@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -40,7 +41,7 @@ public class Main {
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
                 Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
-                tile.getPeople().add(cop);
+                tile.addPerson(cop);
             }
         }
 
@@ -53,17 +54,21 @@ public class Main {
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
                 Tile tile = emptyTiles.get(rand.nextInt(emptyTiles.size()));
-                tile.getPeople().add(agent);
+                tile.addPerson(agent);
             }
         }
     }
 
     public void start() {
         while (true) {
+            List<Person> allPeople = new ArrayList<>();
             for (Tile tile : tiles) {
                 for (Person person : tile.getPeople()) {
-                    person.takeTurn(tile, visibleTiles(tile.getLocation()));
+                    allPeople.add(person);
                 }
+            }
+            for (Person person : allPeople) {
+                person.takeTurn(visibleTiles(person.getTile().getLocation()));
             }
         }
     }
