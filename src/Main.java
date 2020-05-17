@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +13,7 @@ public class Main {
     private final Set<Person> people = new HashSet<>();
     private final List<Snapshot> snapshots = new ArrayList<>();
     private final int vision;
+    private final String output;
 
     public Main(
             double governmentLegitimacy,
@@ -19,8 +23,10 @@ public class Main {
             double agentDensity,
             int worldSize,
             double k,
-            double threshold) throws Exception {
+            double threshold,
+            String output) throws Exception {
         this.vision = vision;
+        this.output = output;
 
         // Initialise tiles
         for (int x = 0; x < worldSize; x++) {
@@ -81,6 +87,31 @@ public class Main {
     }
 
     public void start() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    File file = new File(output);
+                    file.createNewFile();
+                    FileWriter fileWriter = new FileWriter(output);
+                    fileWriter.write("time,active,jailed,quiet\n");
+                    for (int i = 0; i < snapshots.size(); i++) {
+                        Snapshot snapshot = snapshots.get(i);
+                        fileWriter.write(
+                            String.format(
+                                "%d,%d,%d,%d\n",
+                                i,
+                                snapshot.active,
+                                snapshot.jailed,
+                                snapshot.quiet));
+                    }
+                    fileWriter.close();
+                } catch (IOException e) {
+                    System.out.println("Failed to write output");
+                }
+            }
+        });
+
         while (true) {
             for (Person person : people) {
                 person.takeTurn(visibleTiles(person.getTile().getLocation()));
@@ -121,6 +152,7 @@ public class Main {
             agentDensity,
             worldSize,
             k,
-            threshold).start();
+            threshold,
+            "out.csv").start();
     }
 }
