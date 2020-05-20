@@ -27,6 +27,10 @@ public class Agent extends Person {
         return active;
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public int getJailTerm() {
         return jailTerm;
     }
