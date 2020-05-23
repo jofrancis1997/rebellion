@@ -34,7 +34,9 @@ public class Cop extends Person {
             Random rand = new Random();
             Agent agent = activeAgents.get(rand.nextInt(activeAgents.size()));
             agent.setActive(false);
-            agent.setJailTerm(rand.nextInt(maxJailTerm));
+            if (maxJailTerm > 0) {
+                agent.setJailTerm(rand.nextInt(maxJailTerm));
+            }
             if (move) {
                 tile.removePerson(this);
                 agent.getTile().addPerson(this);
