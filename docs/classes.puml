@@ -8,7 +8,7 @@ class Agent {
     - double threshold {readOnly}
     - boolean active
     - int jailTerm
-    + Agent(double governmentLegitimacy, double k, double threshold)
+    + Agent(double governmentLegitimacy, double k, double threshold, boolean move)
     + boolean getActive()
     + int getJailTerm()
     + void setJailTerm()
@@ -16,7 +16,7 @@ class Agent {
 
 class Cop {
     - int maxJailTerm {readOnly}
-    + Cop(int maxJailTerm)
+    + Cop(int maxJailTerm, boolean move)
 }
 
 class Location {
@@ -29,7 +29,7 @@ class Location {
 
 class Main {
     - double vision {readOnly}
-    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold)
+    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold, boolean move, String output)
     + void start()
     - Set<Tile> visibleTiles(Location location)
     - void recordSnapshot()
@@ -37,6 +37,8 @@ class Main {
 }
 
 abstract class Person {
+    # boolean move
+    + Person(boolean move)
     + void takeTurn(Person[] visible)
     + Tile getTile()
     + void setTile(Tile tile)

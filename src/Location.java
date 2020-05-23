@@ -2,15 +2,31 @@ public class Location {
     private int xPos;
     private int yPos;
 
+    /**
+     * Initialise a location with an x and y position.
+     *
+     * @param xPos x position of the tile
+     * @param yPos y position of the tile
+     */
     public Location(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
     }
 
+    /**
+     * Retrieve the x position of the location.
+     *
+     * @return the x position of the location
+     */
     public int getXPos() {
         return xPos;
     }
 
+    /**
+     * Retrieve the y position of the location.
+     *
+     * @return the y position of the location
+     */
     public int getYPos() {
         return yPos;
     }

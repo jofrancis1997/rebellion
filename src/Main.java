@@ -16,6 +16,21 @@ public class Main {
     private final int vision;
     private final String output;
 
+    /**
+     * Initialise a world.
+     *
+     * @param governmentLegitimacy the legitimacy of the government [0-1]
+     * @param maxJailTerm the maximum jail term that agents can be sentenced
+     * @param vision the vision for all people
+     * @param copDensity the initial density of cops
+     * @param agentDensity the initial density of agents
+     * @param worldSize size of the world
+     * @param k constant value
+     * @param threshold threshold to determine whether agents should rebel
+     * @param move whether people should move
+     * @param output the path to the output file
+     * @throws Exception if parameters are invalid
+     */
     public Main(
             double governmentLegitimacy,
             int maxJailTerm,
@@ -25,6 +40,7 @@ public class Main {
             int worldSize,
             double k,
             double threshold,
+            boolean move,
             String output) throws Exception {
         this.vision = vision;
         this.output = output;
@@ -36,6 +52,7 @@ public class Main {
             }
         }
 
+        // Cop density and agent density can't exceed 100
         if (copDensity + agentDensity > 100) {
             throw new Exception(
                 "The sum of copDensity and agentDensity should not exceed 100");
@@ -43,9 +60,9 @@ public class Main {
 
         // Initialise cops
         for (int i = 0; i < copDensity * 0.01 * Math.pow(worldSize, 2); i++) {
-            Cop cop = new Cop(maxJailTerm);
+            Cop cop = new Cop(maxJailTerm, move);
             List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.getPeople().size() == 0)
+                    .filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
@@ -57,9 +74,9 @@ public class Main {
 
         // Initialise agents
         for (int i = 0; i < agentDensity * 0.01 * Math.pow(worldSize, 2); i++) {
-            Agent agent = new Agent(governmentLegitimacy, k, threshold);
+            Agent agent = new Agent(governmentLegitimacy, k, threshold, move);
             List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.getPeople().size() == 0)
+                    .filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
@@ -71,6 +88,9 @@ public class Main {
         recordSnapshot();
     }
 
+    /**
+     * Record a snapshot of the current world state.
+     */
     private void recordSnapshot() {
         Snapshot snapshot = new Snapshot();
         for (Person person : people) {
@@ -87,6 +107,9 @@ public class Main {
         snapshots.add(snapshot);
     }
 
+    /**
+     * Start the simulation.
+     */
     public void start() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -130,6 +153,12 @@ public class Main {
         }
     }
 
+    /**
+     * Retrieve the tiles that are visible from a given location.
+     *
+     * @param location the location from which to retrieve visible tiles
+     * @return the tiles visible from the specified location
+     */
     private Set<Tile> visibleTiles(Location location) {
         return tiles.stream().filter(tile -> {
             Location tileLocation = tile.getLocation();
@@ -140,6 +169,12 @@ public class Main {
         }).collect(Collectors.toSet());
     }
 
+    /**
+     * Main entrypoint.
+     *
+     * @param args command line arguments
+     * @throws Exception if the entered config values are invalid
+     */
     public static void main(String[] args) throws Exception {
         Scanner scan = new Scanner(System.in);
 
@@ -167,6 +202,9 @@ public class Main {
         System.out.print("Threshold: ");
         double threshold = scan.nextDouble();
 
+        System.out.print("Enable movement: ");
+        boolean move = scan.nextBoolean();
+
         System.out.print("Output file: ");
         String output = scan.next();
 
@@ -181,6 +219,7 @@ public class Main {
             worldSize,
             k,
             threshold,
+            move,
             output).start();
     }
 }

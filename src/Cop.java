@@ -6,7 +6,14 @@ import java.util.Set;
 public class Cop extends Person {
     private final int maxJailTerm;
 
-    public Cop(int maxJailTerm) {
+    /**
+     * Initialise a cop.
+     *
+     * @param maxJailTerm the maximum jail term the cop can enforce
+     * @param move whether the cop should move
+     */
+    public Cop(int maxJailTerm, boolean move) {
+        super(move);
         this.maxJailTerm = maxJailTerm;
     }
 
@@ -27,9 +34,13 @@ public class Cop extends Person {
             Random rand = new Random();
             Agent agent = activeAgents.get(rand.nextInt(activeAgents.size()));
             agent.setActive(false);
-            agent.setJailTerm(rand.nextInt(maxJailTerm));
-            tile.removePerson(this);
-            agent.getTile().addPerson(this);
+            if (maxJailTerm > 0) {
+                agent.setJailTerm(rand.nextInt(maxJailTerm));
+            }
+            if (move) {
+                tile.removePerson(this);
+                agent.getTile().addPerson(this);
+            }
         }
     }
 }
