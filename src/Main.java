@@ -52,6 +52,7 @@ public class Main {
             }
         }
 
+        // Cop density and agent density can't exceed 100
         if (copDensity + agentDensity > 100) {
             throw new Exception(
                 "The sum of copDensity and agentDensity should not exceed 100");

@@ -41,6 +41,11 @@ public class Agent extends Person {
         return active;
     }
 
+    /**
+     * Set whether the agent is active.
+     *
+     * @param active whether the agent is active.
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
