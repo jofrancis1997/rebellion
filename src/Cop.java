@@ -6,6 +6,12 @@ import java.util.Set;
 public class Cop extends Person {
     private final int maxJailTerm;
 
+    /**
+     * Initialise a cop.
+     *
+     * @param maxJailTerm the maximum jail term the cop can enforce
+     * @param move whether the cop should move
+     */
     public Cop(int maxJailTerm, boolean move) {
         super(move);
         this.maxJailTerm = maxJailTerm;

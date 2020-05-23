@@ -5,14 +5,29 @@ public class Tile {
     private Set<Person> people = new HashSet<>();
     private final Location location;
 
+    /**
+     * Initialise a tile.
+     *
+     * @param location the location of the tile.
+     */
     public Tile(Location location) {
         this.location = location;
     }
 
+    /**
+     * Retrieve the people currently occupying the tile.
+     *
+     * @return the currently occupying the tile
+     */
     public Set<Person> getPeople() {
         return new HashSet<>(people);
     }
 
+    /**
+     * Determine if the tile is empty.
+     *
+     * @return true if the tile is empty, false otherwise
+     */
     public boolean empty() {
         for (Person person : people) {
             if (person instanceof Cop || person instanceof Agent &&
@@ -23,15 +38,30 @@ public class Tile {
         return true;
     }
 
+    /**
+     * Retrieve the location of the tile.
+     *
+     * @return the location of the tile
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Add a person to the tile.
+     *
+     * @param person a person to add to the tile
+     */
     public void addPerson(Person person) {
         this.people.add(person);
         person.setTile(this);
     }
 
+    /**
+     * Remove a person from the tile.
+     *
+     * @param person a person to remove from the tile
+     */
     public void removePerson(Person person) {
         this.people.remove(person);
         person.setTile(null);

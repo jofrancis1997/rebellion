@@ -11,6 +11,14 @@ public class Agent extends Person {
     private boolean active;
     private int jailTerm;
 
+    /**
+     * Initialise an Agent.
+     *
+     * @param governmentLegitimacy legitimacy of the government 0-1
+     * @param k constant value
+     * @param threshold threshold to determine whether agent should rebel
+     * @param move whether the agent should move
+     */
     public Agent(double governmentLegitimacy, double k, double threshold, boolean move) {
         super(move);
         Random rand = new Random();
@@ -24,6 +32,11 @@ public class Agent extends Person {
         this.grievance = perceivedHardship * (1 - governmentLegitimacy);
     }
 
+    /**
+     * Determine whether the agent is active.
+     *
+     * @return a boolean indicating whether the agent is active or not
+     */
     public boolean getActive() {
         return active;
     }
@@ -32,10 +45,20 @@ public class Agent extends Person {
         this.active = active;
     }
 
+    /**
+     * Retrieve the agents jail term.
+     *
+     * @return remaining jail term for the agent, 0 if not in jail
+     */
     public int getJailTerm() {
         return jailTerm;
     }
 
+    /**
+     * Set the jail term for the agent.
+     *
+     * @param jailTerm the jail term to set for the agent
+     */
     public void setJailTerm(int jailTerm) {
         this.jailTerm = jailTerm;
     }
