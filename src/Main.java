@@ -62,7 +62,7 @@ public class Main {
         for (int i = 0; i < copDensity * 0.01 * Math.pow(worldSize, 2); i++) {
             Cop cop = new Cop(maxJailTerm, move);
             List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.getPeople().size() == 0)
+                    .filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
@@ -76,7 +76,7 @@ public class Main {
         for (int i = 0; i < agentDensity * 0.01 * Math.pow(worldSize, 2); i++) {
             Agent agent = new Agent(governmentLegitimacy, k, threshold, move);
             List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.getPeople().size() == 0)
+                    .filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
