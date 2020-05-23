@@ -5,14 +5,21 @@ import java.util.stream.Collectors;
 
 public abstract class Person {
     protected Tile tile;
+    protected boolean move;
+
+    public Person(boolean move) {
+        this.move = move;
+    }
 
     public void takeTurn(Set<Tile> visibleTiles) {
-        List<Tile> emptyTiles = visibleTiles.stream()
-                .filter(tile -> tile.empty()).collect(Collectors.toList());
-        if (emptyTiles.size() > 0) {
-            tile.removePerson(this);
-            Random rand = new Random();
-            emptyTiles.get(rand.nextInt(emptyTiles.size())).addPerson(this);
+        if (move) {
+            List<Tile> emptyTiles = visibleTiles.stream()
+                    .filter(tile -> tile.empty()).collect(Collectors.toList());
+            if (emptyTiles.size() > 0) {
+                tile.removePerson(this);
+                Random rand = new Random();
+                emptyTiles.get(rand.nextInt(emptyTiles.size())).addPerson(this);
+            }
         }
     }
 

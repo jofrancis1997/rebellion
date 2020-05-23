@@ -25,6 +25,7 @@ public class Main {
             int worldSize,
             double k,
             double threshold,
+            boolean move,
             String output) throws Exception {
         this.vision = vision;
         this.output = output;
@@ -43,7 +44,7 @@ public class Main {
 
         // Initialise cops
         for (int i = 0; i < copDensity * 0.01 * Math.pow(worldSize, 2); i++) {
-            Cop cop = new Cop(maxJailTerm);
+            Cop cop = new Cop(maxJailTerm, move);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
                     .collect(Collectors.toList());
@@ -57,7 +58,7 @@ public class Main {
 
         // Initialise agents
         for (int i = 0; i < agentDensity * 0.01 * Math.pow(worldSize, 2); i++) {
-            Agent agent = new Agent(governmentLegitimacy, k, threshold);
+            Agent agent = new Agent(governmentLegitimacy, k, threshold, move);
             List<Tile> emptyTiles = tiles.stream()
                     .filter(tile -> tile.getPeople().size() == 0)
                     .collect(Collectors.toList());
@@ -167,6 +168,9 @@ public class Main {
         System.out.print("Threshold: ");
         double threshold = scan.nextDouble();
 
+        System.out.print("Enable movement: ");
+        boolean move = scan.nextBoolean();
+
         System.out.print("Output file: ");
         String output = scan.next();
 
@@ -181,6 +185,7 @@ public class Main {
             worldSize,
             k,
             threshold,
+            move,
             output).start();
     }
 }

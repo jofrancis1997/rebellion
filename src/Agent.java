@@ -11,7 +11,8 @@ public class Agent extends Person {
     private boolean active;
     private int jailTerm;
 
-    public Agent(double governmentLegitimacy, double k, double threshold) {
+    public Agent(double governmentLegitimacy, double k, double threshold, boolean move) {
+        super(move);
         Random rand = new Random();
 
         this.active = false;
