@@ -94,7 +94,7 @@ public class Agent extends Person {
      */
     private void notifyDeath() {
         // Perceived hardship will tend towards 1.0
-        perceivedHardship = perceivedHardship + (1 - perceivedHardship) * 0.1;
+        perceivedHardship += (1 - perceivedHardship) * 0.1;
     }
 
     @Override
