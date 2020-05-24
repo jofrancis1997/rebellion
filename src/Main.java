@@ -10,25 +10,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Main {
-    private final Set<Tile> tiles = new HashSet<>();
+    private final double birthRate;
+    private final double deathChance;
+    private final double governmentLegitimacy;
+    private final double k;
+    private final int maxJailTerm;
+    private final boolean move;
+    private final String output;
     private final Set<Person> people = new HashSet<>();
     private final List<Snapshot> snapshots = new ArrayList<>();
+    private final double threshold;
+    private final Set<Tile> tiles = new HashSet<>();
     private final int vision;
-    private final String output;
+
+    private double agentsToBeBorn = 0.0;
 
     /**
      * Initialise a world.
      *
      * @param governmentLegitimacy the legitimacy of the government [0-1]
-     * @param maxJailTerm the maximum jail term that agents can be sentenced
-     * @param vision the vision for all people
-     * @param copDensity the initial density of cops
-     * @param agentDensity the initial density of agents
-     * @param worldSize size of the world
-     * @param k constant value
-     * @param threshold threshold to determine whether agents should rebel
-     * @param move whether people should move
-     * @param output the path to the output file
+     * @param maxJailTerm          the maximum jail term that agents can be
+     *                             sentenced
+     * @param vision               the vision for all people
+     * @param copDensity           the initial density of cops
+     * @param agentDensity         the initial density of agents
+     * @param worldSize            size of the world
+     * @param k                    constant value
+     * @param threshold            threshold to determine whether agents should
+     *                             rebel
+     * @param move                 whether people should move
+     * @param deathChance          chance that an agent will die each tick they
+     *                             are in jail
+     * @param birthRate            number of agents born per tick
+     * @param output               the path to the output file
      * @throws Exception if parameters are invalid
      */
     public Main(
@@ -41,9 +55,18 @@ public class Main {
             double k,
             double threshold,
             boolean move,
+            double deathChance,
+            double birthRate,
             String output) throws Exception {
-        this.vision = vision;
+        this.birthRate = birthRate;
+        this.deathChance = deathChance;
+        this.governmentLegitimacy = governmentLegitimacy;
+        this.k = k;
+        this.maxJailTerm = maxJailTerm;
+        this.move = move;
         this.output = output;
+        this.threshold = threshold;
+        this.vision = vision;
 
         // Initialise tiles
         for (int x = 0; x < worldSize; x++) {
@@ -58,11 +81,15 @@ public class Main {
                 "The sum of copDensity and agentDensity should not exceed 100");
         }
 
-        // Initialise cops
-        for (int i = 0; i < copDensity * 0.01 * Math.pow(worldSize, 2); i++) {
+        createCops((int) (copDensity * 0.01 * Math.pow(worldSize, 2)));
+        createAgents((int) (agentDensity * 0.01 * Math.pow(worldSize, 2)));
+        recordSnapshot();
+    }
+
+    private void createCops(int numCops) {
+        for (int i = 0; i < numCops; i++) {
             Cop cop = new Cop(maxJailTerm, move);
-            List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.empty())
+            List<Tile> emptyTiles = tiles.stream().filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
@@ -71,12 +98,17 @@ public class Main {
                 people.add(cop);
             }
         }
+    }
 
-        // Initialise agents
-        for (int i = 0; i < agentDensity * 0.01 * Math.pow(worldSize, 2); i++) {
-            Agent agent = new Agent(governmentLegitimacy, k, threshold, move);
-            List<Tile> emptyTiles = tiles.stream()
-                    .filter(tile -> tile.empty())
+    private void createAgents(int numAgents) {
+        for (int i = 0; i < numAgents; i++) {
+            Agent agent = new Agent(
+                governmentLegitimacy,
+                k,
+                threshold,
+                deathChance,
+                move);
+            List<Tile> emptyTiles = tiles.stream().filter(tile -> tile.empty())
                     .collect(Collectors.toList());
             if (emptyTiles.size() > 0) {
                 Random rand = new Random();
@@ -85,7 +117,6 @@ public class Main {
                 people.add(agent);
             }
         }
-        recordSnapshot();
     }
 
     /**
@@ -95,7 +126,9 @@ public class Main {
         Snapshot snapshot = new Snapshot();
         for (Person person : people) {
             if (person instanceof Agent) {
-                if (((Agent) person).getJailTerm() > 0) {
+                if (((Agent) person).getDead()) {
+                    snapshot.dead++;
+                } else if (((Agent) person).getJailTerm() > 0) {
                     snapshot.jailed++;
                 } else if (((Agent) person).getActive()) {
                     snapshot.active++;
@@ -118,16 +151,17 @@ public class Main {
                     File file = new File(output);
                     file.createNewFile();
                     FileWriter fileWriter = new FileWriter(output);
-                    fileWriter.write("time,active,jailed,quiet\n");
+                    fileWriter.write("time,active,jailed,quiet,dead\n");
                     for (int i = 0; i < snapshots.size(); i++) {
                         Snapshot snapshot = snapshots.get(i);
                         fileWriter.write(
                             String.format(
-                                "%d,%d,%d,%d\n",
+                                "%d,%d,%d,%d,%d\n",
                                 i,
                                 snapshot.active,
                                 snapshot.jailed,
-                                snapshot.quiet));
+                                snapshot.quiet,
+                                snapshot.dead));
                     }
                     fileWriter.close();
                 } catch (IOException e) {
@@ -136,16 +170,23 @@ public class Main {
             }
         });
 
-        System.out.println("\nActive | Jailed | Quiet");
+        System.out.println("\nActive | Jailed | Quiet | Dead");
 
         while (true) {
             Snapshot snapshot = snapshots.get(snapshots.size() - 1);
             System.out.print(
                 String.format(
-                    "\r%6d | %6d | %5d",
+                    "\r%6d | %6d | %5d | %4d ",
                     snapshot.active,
                     snapshot.jailed,
-                    snapshot.quiet));
+                    snapshot.quiet,
+                    snapshot.dead));
+
+            agentsToBeBorn += birthRate;
+            if (agentsToBeBorn >= 1.0) {
+                createAgents((int) agentsToBeBorn);
+                agentsToBeBorn -= Math.floor(agentsToBeBorn);
+            }
             for (Person person : people) {
                 person.takeTurn(visibleTiles(person.getTile().getLocation()));
             }
@@ -208,6 +249,12 @@ public class Main {
         System.out.print("Output file: ");
         String output = scan.next();
 
+        System.out.print("Death chance: ");
+        double deathChance = scan.nextDouble();
+
+        System.out.print("Birth rate: ");
+        double birthRate = scan.nextDouble();
+
         scan.close();
 
         new Main(
@@ -220,6 +267,8 @@ public class Main {
             k,
             threshold,
             move,
+            deathChance,
+            birthRate,
             output).start();
     }
 }

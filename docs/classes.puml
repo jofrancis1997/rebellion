@@ -1,17 +1,23 @@
 @startuml Rebellion
 
 class Agent {
-    - double grievance {readOnly}
+    - double deathChance {readOnly}
+    - double governmentLegitimacy {readOnly}
     - double k {readOnly}
-    - double perceivedHardship {readOnly}
     - double riskAversion {readOnly}
     - double threshold {readOnly}
     - boolean active
+    - boolean dead
     - int jailTerm
-    + Agent(double governmentLegitimacy, double k, double threshold, boolean move)
+    - double perceivedHardship
+    + Agent(double governmentLegitimacy, double k, double threshold, double deathChance, boolean move)
     + boolean getActive()
+    - void setActive()
+    - double getGrievance()
     + int getJailTerm()
     + void setJailTerm()
+    + void getDead()
+    - void notifyDeath()
 }
 
 class Cop {
@@ -28,18 +34,29 @@ class Location {
 }
 
 class Main {
+    - double birthRate {readOnly}
+    - double deathChance {readOnly}
+    - double governmentLegimacy {readOnly}
+    - double k {readOnly}
+    - int maxJailTerm {readOnly}
+    - boolean move {readOnly}
+    - String output {readOnly}
+    - double threshold {readOnly}
     - double vision {readOnly}
-    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold, boolean move, String output)
+    - double agentsToBeBorn
+    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold, boolean move, double deathChance, double birthRate, String output)
+    - void createCops(int numCops)
+    - void createAgents(int numAgents)
+    - void recordSnapshot()
     + void start()
     - Set<Tile> visibleTiles(Location location)
-    - void recordSnapshot()
     + void main(String[] args) {static}
 }
 
 abstract class Person {
     # boolean move
     + Person(boolean move)
-    + void takeTurn(Person[] visible)
+    + void takeTurn(Collection<Tile> visibleTiles)
     + Tile getTile()
     + void setTile(Tile tile)
 }
@@ -48,6 +65,7 @@ class Snapshot {
     + int active
     + int jailed
     + int quiet
+    + int dead
 }
 
 class Tile {
