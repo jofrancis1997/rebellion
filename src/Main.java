@@ -18,6 +18,7 @@ public class Main {
     private final boolean move;
     private final String output;
     private final Set<Person> people = new HashSet<>();
+    private final double perceivedHardshipIncreaseRate;
     private final List<Snapshot> snapshots = new ArrayList<>();
     private final double threshold;
     private final Set<Tile> tiles = new HashSet<>();
@@ -28,21 +29,25 @@ public class Main {
     /**
      * Initialise a world.
      *
-     * @param governmentLegitimacy the legitimacy of the government [0-1]
-     * @param maxJailTerm          the maximum jail term that agents can be
-     *                             sentenced
-     * @param vision               the vision for all people
-     * @param copDensity           the initial density of cops
-     * @param agentDensity         the initial density of agents
-     * @param worldSize            size of the world
-     * @param k                    constant value
-     * @param threshold            threshold to determine whether agents should
-     *                             rebel
-     * @param move                 whether people should move
-     * @param deathChance          chance that an agent will die each tick they
-     *                             are in jail
-     * @param birthRate            number of agents born per tick
-     * @param output               the path to the output file
+     * @param governmentLegitimacy          the legitimacy of the government
+     *                                      [0-1]
+     * @param maxJailTerm                   the maximum jail term that agents
+     *                                      can be sentenced
+     * @param vision                        the vision for all people
+     * @param copDensity                    the initial density of cops
+     * @param agentDensity                  the initial density of agents
+     * @param worldSize                     size of the world
+     * @param k                             constant value
+     * @param threshold                     threshold to determine whether
+     *                                      agents should rebel
+     * @param move                          whether people should move
+     * @param deathChance                   chance that an agent will die each
+     *                                      tick they are in jail
+     * @param birthRate                     number of agents born per tick
+     * @param perceivedHardshipIncreaseRate rate at which perceived hardship
+     *                                      will increase when agents see others
+     *                                      dying
+     * @param output                        the path to the output file
      * @throws Exception if parameters are invalid
      */
     public Main(
@@ -57,6 +62,7 @@ public class Main {
             boolean move,
             double deathChance,
             double birthRate,
+            double perceivedHardshipIncreaseRate,
             String output) throws Exception {
         this.birthRate = birthRate;
         this.deathChance = deathChance;
@@ -65,6 +71,7 @@ public class Main {
         this.maxJailTerm = maxJailTerm;
         this.move = move;
         this.output = output;
+        this.perceivedHardshipIncreaseRate = perceivedHardshipIncreaseRate;
         this.threshold = threshold;
         this.vision = vision;
 
@@ -117,6 +124,7 @@ public class Main {
                 k,
                 threshold,
                 deathChance,
+                perceivedHardshipIncreaseRate,
                 move);
             List<Tile> emptyTiles = tiles.stream().filter(tile -> tile.empty())
                     .collect(Collectors.toList());
@@ -256,14 +264,17 @@ public class Main {
         System.out.print("Enable movement: ");
         boolean move = scan.nextBoolean();
 
-        System.out.print("Output file: ");
-        String output = scan.next();
-
         System.out.print("Death chance: ");
         double deathChance = scan.nextDouble();
 
         System.out.print("Birth rate: ");
         double birthRate = scan.nextDouble();
+
+        System.out.print("Perceived hardship increase rate: ");
+        double perceivedHardshipIncreaseRate = scan.nextDouble();
+
+        System.out.print("Output file: ");
+        String output = scan.next();
 
         scan.close();
 
@@ -279,6 +290,7 @@ public class Main {
             move,
             deathChance,
             birthRate,
+            perceivedHardshipIncreaseRate,
             output).start();
     }
 }

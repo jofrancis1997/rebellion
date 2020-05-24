@@ -5,6 +5,7 @@ public class Agent extends Person {
     private final double deathChance;
     private final double governmentLegitimacy;
     private final double k;
+    private final double perceivedHardshipIncreaseRate;
     private final double riskAversion;
     private final double threshold;
 
@@ -28,6 +29,7 @@ public class Agent extends Person {
             double k,
             double threshold,
             double deathChance,
+            double perceivedHardshipIncreaseRate,
             boolean move) {
         super(move);
         Random rand = new Random();
@@ -36,6 +38,7 @@ public class Agent extends Person {
         this.governmentLegitimacy = governmentLegitimacy;
         this.k = k;
         this.perceivedHardship = rand.nextDouble();
+        this.perceivedHardshipIncreaseRate = perceivedHardshipIncreaseRate;
         this.riskAversion = rand.nextDouble();
         this.threshold = threshold;
     }
@@ -94,7 +97,8 @@ public class Agent extends Person {
      */
     private void notifyDeath() {
         // Perceived hardship will tend towards 1.0
-        perceivedHardship += (1 - perceivedHardship) * 0.1;
+        perceivedHardship += (1 - perceivedHardship) *
+            perceivedHardshipIncreaseRate;
     }
 
     @Override

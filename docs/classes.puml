@@ -4,6 +4,7 @@ class Agent {
     - double deathChance {readOnly}
     - double governmentLegitimacy {readOnly}
     - double k {readOnly}
+    - double perceivedHardshipIncreaseRate {readOnly}
     - double riskAversion {readOnly}
     - double threshold {readOnly}
     - boolean active
@@ -41,10 +42,11 @@ class Main {
     - int maxJailTerm {readOnly}
     - boolean move {readOnly}
     - String output {readOnly}
+    - double perceivedHardshipIncreaseRate {readOnly}
     - double threshold {readOnly}
     - double vision {readOnly}
     - double agentsToBeBorn
-    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold, boolean move, double deathChance, double birthRate, String output)
+    + Main(double governmentLegimacy, int maxJailTerm, int vision, double copDensity, double agentDensity, int worldSize, double k, double threshold, boolean move, double deathChance, double birthRate, double perceivedHardshipIncreaseRate, String output)
     - void createCops(int numCops)
     - void createAgents(int numAgents)
     - void recordSnapshot()
