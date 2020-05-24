@@ -1,35 +1,46 @@
+import java.util.Collection;
 import java.util.Random;
-import java.util.Set;
 
 public class Agent extends Person {
-    private final double grievance;
+    private final double deathChance;
+    private final double governmentLegitimacy;
     private final double k;
-    private final double perceivedHardship;
+    private final double perceivedHardshipIncreaseRate;
     private final double riskAversion;
     private final double threshold;
 
-    private boolean active;
-    private int jailTerm;
+    private boolean active = false;
+    private boolean dead = false;
+    private int jailTerm = 0;
+    private double perceivedHardship;
 
     /**
      * Initialise an Agent.
      *
      * @param governmentLegitimacy legitimacy of the government 0-1
-     * @param k constant value
-     * @param threshold threshold to determine whether agent should rebel
-     * @param move whether the agent should move
+     * @param k                    constant value
+     * @param threshold            threshold to determine whether agent should
+     *                             rebel
+     * @param deathChance
+     * @param move                 whether the agent should move
      */
-    public Agent(double governmentLegitimacy, double k, double threshold, boolean move) {
+    public Agent(
+            double governmentLegitimacy,
+            double k,
+            double threshold,
+            double deathChance,
+            double perceivedHardshipIncreaseRate,
+            boolean move) {
         super(move);
         Random rand = new Random();
 
-        this.active = false;
-        this.jailTerm = 0;
+        this.deathChance = deathChance;
+        this.governmentLegitimacy = governmentLegitimacy;
         this.k = k;
         this.perceivedHardship = rand.nextDouble();
+        this.perceivedHardshipIncreaseRate = perceivedHardshipIncreaseRate;
         this.riskAversion = rand.nextDouble();
         this.threshold = threshold;
-        this.grievance = perceivedHardship * (1 - governmentLegitimacy);
     }
 
     /**
@@ -50,6 +61,10 @@ public class Agent extends Person {
         this.active = active;
     }
 
+    private double getGrievance() {
+        return perceivedHardship * (1 - governmentLegitimacy);
+    }
+
     /**
      * Retrieve the agents jail term.
      *
@@ -68,33 +83,67 @@ public class Agent extends Person {
         this.jailTerm = jailTerm;
     }
 
+    /**
+     * Retrieve dead.
+     *
+     * @return true if the agent is dead, false otherwise
+     */
+    public boolean getDead() {
+        return dead;
+    }
+
+    /**
+     * Notify the agent of a nearby death.
+     */
+    private void notifyDeath() {
+        // Perceived hardship will tend towards 1.0
+        perceivedHardship += (1 - perceivedHardship) *
+            perceivedHardshipIncreaseRate;
+    }
+
     @Override
-    public void takeTurn(Set<Tile> visibleTiles) {
-        if (jailTerm == 0) {
-            super.takeTurn(visibleTiles);
+    public void takeTurn(Collection<Tile> visibleTiles) {
+        if (!dead) {
+            if (jailTerm == 0) {
+                super.takeTurn(visibleTiles);
 
-            int cops = 0;
-            int activeAgents = 1;
+                int cops = 0;
+                int activeAgents = 1;
 
-            for (Tile tile : visibleTiles) {
-                for (Person person : tile.getPeople()) {
-                    if (person instanceof Cop) {
-                        cops++;
-                    } else if (person instanceof Agent &&
-                        ((Agent) person).getActive()) {
-                        activeAgents++;
+                for (Tile tile : visibleTiles) {
+                    for (Person person : tile.getPeople()) {
+                        if (person instanceof Cop) {
+                            cops++;
+                        } else if (person instanceof Agent &&
+                            ((Agent) person).getActive()) {
+                            activeAgents++;
+                        }
                     }
                 }
+
+                double estimatedArrestProbability = 1 -
+                    Math.exp(-k * Math.floor(cops / activeAgents));
+
+                double netRisk = estimatedArrestProbability * riskAversion;
+
+                active = getGrievance() - netRisk > threshold;
+            } else {
+                Random rand = new Random();
+                if (rand.nextDouble() <= deathChance) {
+                    dead = true;
+
+                    // Notify visible agents of the death
+                    for (Tile tile : visibleTiles) {
+                        for (Person person : tile.getPeople()) {
+                            if (person instanceof Agent) {
+                                ((Agent) person).notifyDeath();
+                            }
+                        }
+                    }
+                } else {
+                    jailTerm--;
+                }
             }
-
-            double estimatedArrestProbability = 1 -
-                Math.exp(-k * Math.floor(cops / activeAgents));
-
-            double netRisk = estimatedArrestProbability * riskAversion;
-
-            active = grievance - netRisk > threshold;
-        } else {
-            jailTerm--;
         }
     }
 }

@@ -1,6 +1,6 @@
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class Person {
@@ -21,7 +21,7 @@ public abstract class Person {
      *
      * @param visibleTiles tiles that are visible to the person
      */
-    public void takeTurn(Set<Tile> visibleTiles) {
+    public void takeTurn(Collection<Tile> visibleTiles) {
         if (move) {
             List<Tile> emptyTiles = visibleTiles.stream()
                     .filter(tile -> tile.empty()).collect(Collectors.toList());

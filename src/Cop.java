@@ -1,7 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class Cop extends Person {
     private final int maxJailTerm;
@@ -10,7 +10,7 @@ public class Cop extends Person {
      * Initialise a cop.
      *
      * @param maxJailTerm the maximum jail term the cop can enforce
-     * @param move whether the cop should move
+     * @param move        whether the cop should move
      */
     public Cop(int maxJailTerm, boolean move) {
         super(move);
@@ -18,7 +18,7 @@ public class Cop extends Person {
     }
 
     @Override
-    public void takeTurn(Set<Tile> visibleTiles) {
+    public void takeTurn(Collection<Tile> visibleTiles) {
         super.takeTurn(visibleTiles);
         List<Agent> activeAgents = new ArrayList<>();
 
