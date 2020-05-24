@@ -86,6 +86,11 @@ public class Main {
         recordSnapshot();
     }
 
+    /**
+     * Create cops and insert them into tiles.
+     *
+     * @param numCops number of cops to create
+     */
     private void createCops(int numCops) {
         for (int i = 0; i < numCops; i++) {
             Cop cop = new Cop(maxJailTerm, move);
@@ -100,6 +105,11 @@ public class Main {
         }
     }
 
+    /**
+     * Create agents and insert them into tiles.
+     *
+     * @param numAgents number of agents to create
+     */
     private void createAgents(int numAgents) {
         for (int i = 0; i < numAgents; i++) {
             Agent agent = new Agent(

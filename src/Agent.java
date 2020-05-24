@@ -80,12 +80,20 @@ public class Agent extends Person {
         this.jailTerm = jailTerm;
     }
 
+    /**
+     * Retrieve dead.
+     *
+     * @return true if the agent is dead, false otherwise
+     */
     public boolean getDead() {
         return dead;
     }
 
+    /**
+     * Notify the agent of a nearby death.
+     */
     private void notifyDeath() {
-        // Perceived hardship will tend towards 1
+        // Perceived hardship will tend towards 1.0
         perceivedHardship = perceivedHardship + (1 - perceivedHardship) * 0.1;
     }
 
