@@ -63,7 +63,30 @@ public class Main {
             double deathChance,
             double birthRate,
             double perceivedHardshipIncreaseRate,
-            String output) throws Exception {
+            String output) {
+
+        if (governmentLegitimacy > 1.0 || governmentLegitimacy < 0.0) {
+            throw new IllegalArgumentException(
+                "governmentLegitimacy must be between 0.0 and 1.0");
+        }
+
+        // Cop density and agent density can't exceed 100
+        if (copDensity + agentDensity > 100) {
+            throw new IllegalArgumentException(
+                "The sum of copDensity and agentDensity should not exceed 100");
+        }
+
+        if (deathChance > 1.0 || deathChance < 0.0) {
+            throw new IllegalArgumentException(
+                "deathChance must be between 0.0 and 1.0");
+        }
+
+        if (perceivedHardshipIncreaseRate > 1.0 ||
+            perceivedHardshipIncreaseRate < 0.0) {
+            throw new IllegalArgumentException(
+                "perceivedHardshipIncreaseRate must be between 0.0 and 1.0");
+        }
+
         this.birthRate = birthRate;
         this.deathChance = deathChance;
         this.governmentLegitimacy = governmentLegitimacy;
@@ -80,12 +103,6 @@ public class Main {
             for (int y = 0; y < worldSize; y++) {
                 tiles.add(new Tile(new Location(x, y)));
             }
-        }
-
-        // Cop density and agent density can't exceed 100
-        if (copDensity + agentDensity > 100) {
-            throw new Exception(
-                "The sum of copDensity and agentDensity should not exceed 100");
         }
 
         createCops((int) (copDensity * 0.01 * Math.pow(worldSize, 2)));
@@ -191,6 +208,7 @@ public class Main {
         System.out.println("\nActive | Jailed | Quiet | Dead");
 
         while (true) {
+            // Print most recent snapshot
             Snapshot snapshot = snapshots.get(snapshots.size() - 1);
             System.out.print(
                 String.format(
@@ -200,14 +218,18 @@ public class Main {
                     snapshot.quiet,
                     snapshot.dead));
 
+            // New agents are born
             agentsToBeBorn += birthRate;
             if (agentsToBeBorn >= 1.0) {
                 createAgents((int) agentsToBeBorn);
                 agentsToBeBorn -= Math.floor(agentsToBeBorn);
             }
+
+            // Process turns for all people in the simulation
             for (Person person : people) {
                 person.takeTurn(visibleTiles(person.getTile().getLocation()));
             }
+
             recordSnapshot();
         }
     }
@@ -234,63 +256,63 @@ public class Main {
      * @param args command line arguments
      * @throws Exception if the entered config values are invalid
      */
-    public static void main(String[] args) throws Exception {
-        Scanner scan = new Scanner(System.in);
+    public static void main(String[] args) {
+        // Read inputs from stdin
+        try (Scanner scan = new Scanner(System.in)) {
+            System.out.print("Government Legitimacy: ");
+            double governmentLegitimacy = scan.nextDouble();
 
-        System.out.print("Government Legitimacy: ");
-        double governmentLegitimacy = scan.nextDouble();
+            System.out.print("Max Jail Term: ");
+            int maxJailTerm = scan.nextInt();
 
-        System.out.print("Max Jail Term: ");
-        int maxJailTerm = scan.nextInt();
+            System.out.print("Cop Density: ");
+            double copDensity = scan.nextDouble();
 
-        System.out.print("Cop Density: ");
-        double copDensity = scan.nextDouble();
+            System.out.print("Agent Density: ");
+            double agentDensity = scan.nextDouble();
 
-        System.out.print("Agent Density: ");
-        double agentDensity = scan.nextDouble();
+            System.out.print("Vision: ");
+            int vision = scan.nextInt();
 
-        System.out.print("Vision: ");
-        int vision = scan.nextInt();
+            System.out.print("World Size: ");
+            int worldSize = scan.nextInt();
 
-        System.out.print("World Size: ");
-        int worldSize = scan.nextInt();
+            System.out.print("k: ");
+            double k = scan.nextDouble();
 
-        System.out.print("k: ");
-        double k = scan.nextDouble();
+            System.out.print("Threshold: ");
+            double threshold = scan.nextDouble();
 
-        System.out.print("Threshold: ");
-        double threshold = scan.nextDouble();
+            System.out.print("Enable movement: ");
+            boolean move = scan.nextBoolean();
 
-        System.out.print("Enable movement: ");
-        boolean move = scan.nextBoolean();
+            System.out.print("Death chance: ");
+            double deathChance = scan.nextDouble();
 
-        System.out.print("Death chance: ");
-        double deathChance = scan.nextDouble();
+            System.out.print("Birth rate: ");
+            double birthRate = scan.nextDouble();
 
-        System.out.print("Birth rate: ");
-        double birthRate = scan.nextDouble();
+            System.out.print("Perceived hardship increase rate: ");
+            double perceivedHardshipIncreaseRate = scan.nextDouble();
 
-        System.out.print("Perceived hardship increase rate: ");
-        double perceivedHardshipIncreaseRate = scan.nextDouble();
+            System.out.print("Output file: ");
+            String output = scan.next();
 
-        System.out.print("Output file: ");
-        String output = scan.next();
-
-        scan.close();
-
-        new Main(
-            governmentLegitimacy,
-            maxJailTerm,
-            vision,
-            copDensity,
-            agentDensity,
-            worldSize,
-            k,
-            threshold,
-            move,
-            deathChance,
-            birthRate,
-            perceivedHardshipIncreaseRate,
-            output).start();
+            // Start simulation
+            new Main(
+                governmentLegitimacy,
+                maxJailTerm,
+                vision,
+                copDensity,
+                agentDensity,
+                worldSize,
+                k,
+                threshold,
+                move,
+                deathChance,
+                birthRate,
+                perceivedHardshipIncreaseRate,
+                output).start();
+        }
     }
 }
