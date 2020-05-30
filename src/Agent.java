@@ -9,20 +9,40 @@ public class Agent extends Person {
     private final double riskAversion;
     private final double threshold;
 
+    /**
+     * Whether the agent is active
+     */
     private boolean active = false;
+
+    /**
+     * Whether the agent is dead
+     */
     private boolean dead = false;
+
+    /**
+     * The agent's current jail term, 0 if not in jail
+     */
     private int jailTerm = 0;
+
+    /**
+     * The agent's perceived hardship
+     */
     private double perceivedHardship;
 
     /**
      * Initialise an Agent.
      *
-     * @param governmentLegitimacy legitimacy of the government 0-1
-     * @param k                    constant value
-     * @param threshold            threshold to determine whether agent should
-     *                             rebel
-     * @param deathChance
-     * @param move                 whether the agent should move
+     * @param governmentLegitimacy          legitimacy of the government 0-1
+     * @param k                             constant value
+     * @param threshold                     threshold to determine whether agent
+     *                                      should rebel
+     * @param deathChance                   chance of dying for each unit time
+     *                                      spent in jail
+     * @param perceivedHardshipIncreaseRate the rate at which the agent's
+     *                                      perceived hardship will increase
+     *                                      towards 1.0 for each agent they see
+     *                                      die
+     * @param move                          whether the agent should move
      */
     public Agent(
             double governmentLegitimacy,

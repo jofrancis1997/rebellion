@@ -48,7 +48,6 @@ public class Main {
      *                                      will increase when agents see others
      *                                      dying
      * @param output                        the path to the output file
-     * @throws Exception if parameters are invalid
      */
     public Main(
             double governmentLegitimacy,
